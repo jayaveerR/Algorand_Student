@@ -11,10 +11,12 @@ const StudentForm: React.FC = () => {
   const { activeAddress, transactionSigner } = useWallet();
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
+  const [txId, setTxId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     rollNo: "",
     city: "",
+    phoneNumber: "",
   });
 
   const algodConfig = getAlgodConfigFromViteEnvironment();
@@ -85,16 +87,19 @@ const StudentForm: React.FC = () => {
       // Call add_student ABI method
       const boxKey = algosdk.decodeAddress(activeAddress).publicKey;
 
-      await appClient.send.addStudent({
+      const result = await appClient.send.addStudent({
         args: {
           name: formData.name,
           rollNo: formData.rollNo,
           city: formData.city,
+          phoneNumber: formData.phoneNumber,
         },
         boxReferences: [{ appId: BigInt(0), name: boxKey }],
       });
+
+      setTxId(result.txIds[0]);
       enqueueSnackbar("Student data saved successfully on blockchain!", { variant: "success" });
-      setFormData({ name: "", rollNo: "", city: "" });
+      setFormData({ name: "", rollNo: "", city: "", phoneNumber: "" });
     } catch (error: any) {
       console.error("Blockchain error:", error);
       enqueueSnackbar(`Failed to save data: ${error.message}`, { variant: "error" });
@@ -157,6 +162,20 @@ const StudentForm: React.FC = () => {
         </div>
 
         <div className="space-y-2">
+          <label className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Phone Number</label>
+          <input
+            type="text"
+            name="phoneNumber"
+            placeholder="Enter phone number"
+            className="w-full px-6 py-5 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-green-600 focus:bg-white outline-none transition-all font-semibold text-gray-800"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            disabled={loading}
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
           <label className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Verified Wallet</label>
           <div className="w-full px-6 py-5 rounded-2xl bg-gray-100 border-2 border-gray-100 flex items-center justify-between">
             <span className="text-gray-500 font-mono text-sm truncate max-w-[80%]">{activeAddress || "Connect wallet to register"}</span>
@@ -206,6 +225,48 @@ const StudentForm: React.FC = () => {
           </button>
         </div>
       </form>
+
+      {txId && (
+        <div className="mt-8 p-6 bg-green-50 rounded-2xl border border-green-100 animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-green-700 uppercase tracking-widest">Transaction Confirmed</span>
+            <a
+              href={`https://lora.algokit.io/testnet/transaction/${txId}`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-xs font-bold text-green-600 hover:text-green-800 transition-colors underline"
+            >
+              VIEW ON EXPLORER
+            </a>
+          </div>
+          <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-green-200">
+            <code className="text-sm font-mono text-green-900 truncate flex-1">{txId}</code>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(txId);
+                enqueueSnackbar("Transaction ID copied!", { variant: "success" });
+              }}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Copy Transaction ID"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-5 h-5 text-gray-600"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="mt-8 text-center">
         <p className="text-xs text-gray-400 font-bold uppercase tracking-tighter">Powered by Algorand Blockchain Technology</p>

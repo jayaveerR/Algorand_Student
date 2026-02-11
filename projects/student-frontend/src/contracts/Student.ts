@@ -22,9 +22,8 @@ import { AppFactory as _AppFactory, AppFactoryAppClientParams, AppFactoryResolve
 import { TransactionComposer, AppCallMethodCall, AppMethodCallTransactionArgument, SimulateOptions, RawSimulateOptions, SkipSignaturesSimulateOptions } from '@algorandfoundation/algokit-utils/types/composer'
 import { SendParams, SendSingleTransactionResult, SendAtomicTransactionComposerResults } from '@algorandfoundation/algokit-utils/types/transaction'
 import { Address, encodeAddress, modelsv2, OnApplicationComplete, Transaction, TransactionSigner } from 'algosdk'
-import SimulateResponse = modelsv2.SimulateResponse
 
-export const APP_SPEC: Arc56Contract = {"name":"Student","structs":{},"methods":[{"name":"hello","args":[{"type":"string","name":"name"}],"returns":{"type":"string"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"events":[],"recommendations":{}},{"name":"add_student","args":[{"type":"string","name":"name"},{"type":"string","name":"roll_no"},{"type":"string","name":"city"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Stores student details in a box indexed by their wallet address.","events":[],"recommendations":{}},{"name":"get_student","args":[{"type":"string","name":"address"}],"returns":{"type":"string"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Retrieves student details for a given address string.","events":[],"recommendations":{}}],"arcs":[22,28],"networks":{},"state":{"schema":{"global":{"ints":0,"bytes":0},"local":{"ints":0,"bytes":0}},"keys":{"global":{},"local":{},"box":{}},"maps":{"global":{},"local":{},"box":{}}},"bareActions":{"create":["NoOp"],"call":[]},"sourceInfo":{"approval":{"sourceInfo":[{"pc":[60,106,122,138,179],"errorMessage":"invalid array length header"},{"pc":[67,113,129,145,185],"errorMessage":"invalid number of bytes for arc4.dynamic_array<arc4.uint8>"}],"pcOffsetMethod":"none"},"clear":{"sourceInfo":[],"pcOffsetMethod":"none"}},"source":{"approval":"I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuYXBwcm92YWxfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIGludGNibG9jayAwIDIgMQogICAgLy8gc21hcnRfY29udHJhY3RzL3N0dWRlbnQvY29udHJhY3QucHk6NQogICAgLy8gY2xhc3MgU3R1ZGVudChBUkM0Q29udHJhY3QpOgogICAgdHhuIE51bUFwcEFyZ3MKICAgIGJ6IG1haW5fX19hbGdvcHlfZGVmYXVsdF9jcmVhdGVAMTAKICAgIHR4biBPbkNvbXBsZXRpb24KICAgICEKICAgIGFzc2VydAogICAgdHhuIEFwcGxpY2F0aW9uSUQKICAgIGFzc2VydAogICAgcHVzaGJ5dGVzcyAweDAyYmVjZTExIDB4MDgyMGNjNzYgMHhmMTQ4ZTdlZCAvLyBtZXRob2QgImhlbGxvKHN0cmluZylzdHJpbmciLCBtZXRob2QgImFkZF9zdHVkZW50KHN0cmluZyxzdHJpbmcsc3RyaW5nKXZvaWQiLCBtZXRob2QgImdldF9zdHVkZW50KHN0cmluZylzdHJpbmciCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAwCiAgICBtYXRjaCBoZWxsbyBhZGRfc3R1ZGVudCBnZXRfc3R1ZGVudAogICAgZXJyCgptYWluX19fYWxnb3B5X2RlZmF1bHRfY3JlYXRlQDEwOgogICAgdHhuIE9uQ29tcGxldGlvbgogICAgIQogICAgdHhuIEFwcGxpY2F0aW9uSUQKICAgICEKICAgICYmCiAgICByZXR1cm4KCgovLyBzbWFydF9jb250cmFjdHMuc3R1ZGVudC5jb250cmFjdC5TdHVkZW50LmhlbGxvW3JvdXRpbmddKCkgLT4gdm9pZDoKaGVsbG86CiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weTo2CiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgaW50Y18wIC8vIDAKICAgIGV4dHJhY3RfdWludDE2IC8vIG9uIGVycm9yOiBpbnZhbGlkIGFycmF5IGxlbmd0aCBoZWFkZXIKICAgIGludGNfMSAvLyAyCiAgICArCiAgICBkaWcgMQogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIGV4dHJhY3QgMiAwCiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weTo4CiAgICAvLyByZXR1cm4gIkhlbGxvLCAiICsgbmFtZQogICAgcHVzaGJ5dGVzICJIZWxsbywgIgogICAgc3dhcAogICAgY29uY2F0CiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weTo2CiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIGR1cAogICAgbGVuCiAgICBpdG9iCiAgICBleHRyYWN0IDYgMgogICAgc3dhcAogICAgY29uY2F0CiAgICBwdXNoYnl0ZXMgMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIGludGNfMiAvLyAxCiAgICByZXR1cm4KCgovLyBzbWFydF9jb250cmFjdHMuc3R1ZGVudC5jb250cmFjdC5TdHVkZW50LmFkZF9zdHVkZW50W3JvdXRpbmddKCkgLT4gdm9pZDoKYWRkX3N0dWRlbnQ6CiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weToxMAogICAgLy8gQGFiaW1ldGhvZCgpCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGludGNfMCAvLyAwCiAgICBleHRyYWN0X3VpbnQxNiAvLyBvbiBlcnJvcjogaW52YWxpZCBhcnJheSBsZW5ndGggaGVhZGVyCiAgICBpbnRjXzEgLy8gMgogICAgKwogICAgZGlnIDEKICAgIGxlbgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5keW5hbWljX2FycmF5PGFyYzQudWludDg+CiAgICBleHRyYWN0IDIgMAogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBpbnRjXzAgLy8gMAogICAgZXh0cmFjdF91aW50MTYgLy8gb24gZXJyb3I6IGludmFsaWQgYXJyYXkgbGVuZ3RoIGhlYWRlcgogICAgaW50Y18xIC8vIDIKICAgICsKICAgIGRpZyAxCiAgICBsZW4KICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuZHluYW1pY19hcnJheTxhcmM0LnVpbnQ4PgogICAgZXh0cmFjdCAyIDAKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDMKICAgIGR1cAogICAgaW50Y18wIC8vIDAKICAgIGV4dHJhY3RfdWludDE2IC8vIG9uIGVycm9yOiBpbnZhbGlkIGFycmF5IGxlbmd0aCBoZWFkZXIKICAgIGludGNfMSAvLyAyCiAgICArCiAgICBkaWcgMQogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIGV4dHJhY3QgMiAwCiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weToxNQogICAgLy8gYm94X2tleSA9IFR4bi5zZW5kZXIuYnl0ZXMKICAgIHR4biBTZW5kZXIKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9zdHVkZW50L2NvbnRyYWN0LnB5OjE2CiAgICAvLyBzdHVkZW50X2RhdGEgPSBuYW1lICsgInwiICsgcm9sbF9ubyArICJ8IiArIGNpdHkKICAgIHVuY292ZXIgMwogICAgcHVzaGJ5dGVzICJ8IgogICAgY29uY2F0CiAgICB1bmNvdmVyIDMKICAgIGNvbmNhdAogICAgcHVzaGJ5dGVzICJ8IgogICAgY29uY2F0CiAgICB1bmNvdmVyIDIKICAgIGNvbmNhdAogICAgLy8gc21hcnRfY29udHJhY3RzL3N0dWRlbnQvY29udHJhY3QucHk6MTgtMTkKICAgIC8vICMgRGVsZXRlIGlmIGV4aXN0cwogICAgLy8gZGVsZXRlZCA9IG9wLkJveC5kZWxldGUoYm94X2tleSkKICAgIGRpZyAxCiAgICBib3hfZGVsCiAgICBwb3AKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9zdHVkZW50L2NvbnRyYWN0LnB5OjIxLTIyCiAgICAvLyAjIFN0b3JlIHRoZSBkYXRhCiAgICAvLyBvcC5Cb3gucHV0KGJveF9rZXksIHN0dWRlbnRfZGF0YS5ieXRlcykKICAgIGJveF9wdXQKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9zdHVkZW50L2NvbnRyYWN0LnB5OjEwCiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIGludGNfMiAvLyAxCiAgICByZXR1cm4KCgovLyBzbWFydF9jb250cmFjdHMuc3R1ZGVudC5jb250cmFjdC5TdHVkZW50LmdldF9zdHVkZW50W3JvdXRpbmddKCkgLT4gdm9pZDoKZ2V0X3N0dWRlbnQ6CiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weToyNAogICAgLy8gQGFiaW1ldGhvZCgpCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGludGNfMCAvLyAwCiAgICBleHRyYWN0X3VpbnQxNiAvLyBvbiBlcnJvcjogaW52YWxpZCBhcnJheSBsZW5ndGggaGVhZGVyCiAgICBpbnRjXzEgLy8gMgogICAgKwogICAgc3dhcAogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIHB1c2hieXRlcyAweDE1MWY3Yzc1MDAxOTQ0NjE3NDYxMjA3MjY1NzQ3MjY5NjU3NjYxNmMyMDZjNmY2NzY5NjMyMDY4NjU3MjY1CiAgICBsb2cKICAgIGludGNfMiAvLyAxCiAgICByZXR1cm4K","clear":"I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuY2xlYXJfc3RhdGVfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIHB1c2hpbnQgMQogICAgcmV0dXJuCg=="},"byteCode":{"approval":"CyADAAIBMRtBACQxGRREMRhEggMEAr7OEQQIIMx2BPFI5+02GgCOAwAJADcAgAAxGRQxGBQQQzYaAUkiWSMISwEVEkRXAgCAB0hlbGxvLCBMUEkVFlcGAkxQgAQVH3x1TFCwJEM2GgFJIlkjCEsBFRJEVwIANhoCSSJZIwhLARUSRFcCADYaA0kiWSMISwEVEkRXAgAxAE8DgAF8UE8DUIABfFBPAlBLAbxIvyRDNhoBSSJZIwhMFRJEgB8VH3x1ABlEYXRhIHJldHJpZXZhbCBsb2dpYyBoZXJlsCRD","clear":"C4EBQw=="},"compilerInfo":{"compiler":"puya","compilerVersion":{"major":5,"minor":7,"patch":1}},"events":[],"templateVariables":{}} as unknown as Arc56Contract
+export const APP_SPEC: Arc56Contract = {"name":"Student","structs":{},"methods":[{"name":"hello","args":[{"type":"string","name":"name"}],"returns":{"type":"string"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"events":[],"recommendations":{}},{"name":"add_student","args":[{"type":"string","name":"name"},{"type":"string","name":"roll_no"},{"type":"string","name":"city"},{"type":"string","name":"phone_number"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Stores student details as a single pipe-separated string.","events":[],"recommendations":{}},{"name":"get_student","args":[{"type":"address","name":"address"}],"returns":{"type":"string"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Retrieves the raw student data string.","events":[],"recommendations":{}}],"arcs":[22,28],"networks":{},"state":{"schema":{"global":{"ints":0,"bytes":0},"local":{"ints":0,"bytes":0}},"keys":{"global":{},"local":{},"box":{}},"maps":{"global":{},"local":{},"box":{"students":{"keyType":"AVMBytes","valueType":"AVMString","prefix":"c3R1ZGVudHM="}}}},"bareActions":{"create":["NoOp"],"call":[]},"sourceInfo":{"approval":{"sourceInfo":[{"pc":[218],"errorMessage":"check self.students entry exists"},{"pc":[78,119,135,151,167],"errorMessage":"invalid array length header"},{"pc":[85,126,142,158,174],"errorMessage":"invalid number of bytes for arc4.dynamic_array<arc4.uint8>"},{"pc":[213],"errorMessage":"invalid number of bytes for arc4.static_array<arc4.uint8, 32>"}],"pcOffsetMethod":"none"},"clear":{"sourceInfo":[],"pcOffsetMethod":"none"}},"source":{"approval":"I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuYXBwcm92YWxfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIGludGNibG9jayAwIDIgMQogICAgYnl0ZWNibG9jayAifCIgMHgxNTFmN2M3NSAic3R1ZGVudHMiCiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weTo1CiAgICAvLyBjbGFzcyBTdHVkZW50KEFSQzRDb250cmFjdCk6CiAgICB0eG4gTnVtQXBwQXJncwogICAgYnogbWFpbl9fX2FsZ29weV9kZWZhdWx0X2NyZWF0ZUAxMgogICAgdHhuIE9uQ29tcGxldGlvbgogICAgIQogICAgYXNzZXJ0CiAgICB0eG4gQXBwbGljYXRpb25JRAogICAgYXNzZXJ0CiAgICBwdXNoYnl0ZXNzIDB4MDJiZWNlMTEgMHhlMjQ0ZTk5NCAweDIwMWJjOWViIC8vIG1ldGhvZCAiaGVsbG8oc3RyaW5nKXN0cmluZyIsIG1ldGhvZCAiYWRkX3N0dWRlbnQoc3RyaW5nLHN0cmluZyxzdHJpbmcsc3RyaW5nKXZvaWQiLCBtZXRob2QgImdldF9zdHVkZW50KGFkZHJlc3Mpc3RyaW5nIgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMAogICAgbWF0Y2ggaGVsbG8gYWRkX3N0dWRlbnQgZ2V0X3N0dWRlbnQKICAgIGVycgoKbWFpbl9fX2FsZ29weV9kZWZhdWx0X2NyZWF0ZUAxMjoKICAgIHR4biBPbkNvbXBsZXRpb24KICAgICEKICAgIHR4biBBcHBsaWNhdGlvbklECiAgICAhCiAgICAmJgogICAgcmV0dXJuCgoKLy8gc21hcnRfY29udHJhY3RzLnN0dWRlbnQuY29udHJhY3QuU3R1ZGVudC5oZWxsb1tyb3V0aW5nXSgpIC0+IHZvaWQ6CmhlbGxvOgogICAgLy8gc21hcnRfY29udHJhY3RzL3N0dWRlbnQvY29udHJhY3QucHk6MTAKICAgIC8vIEBhYmltZXRob2QoKQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBpbnRjXzAgLy8gMAogICAgZXh0cmFjdF91aW50MTYgLy8gb24gZXJyb3I6IGludmFsaWQgYXJyYXkgbGVuZ3RoIGhlYWRlcgogICAgaW50Y18xIC8vIDIKICAgICsKICAgIGRpZyAxCiAgICBsZW4KICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuZHluYW1pY19hcnJheTxhcmM0LnVpbnQ4PgogICAgZXh0cmFjdCAyIDAKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9zdHVkZW50L2NvbnRyYWN0LnB5OjEyCiAgICAvLyByZXR1cm4gIkhlbGxvLCAiICsgbmFtZQogICAgcHVzaGJ5dGVzICJIZWxsbywgIgogICAgc3dhcAogICAgY29uY2F0CiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weToxMAogICAgLy8gQGFiaW1ldGhvZCgpCiAgICBkdXAKICAgIGxlbgogICAgaXRvYgogICAgZXh0cmFjdCA2IDIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgYnl0ZWNfMSAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18yIC8vIDEKICAgIHJldHVybgoKCi8vIHNtYXJ0X2NvbnRyYWN0cy5zdHVkZW50LmNvbnRyYWN0LlN0dWRlbnQuYWRkX3N0dWRlbnRbcm91dGluZ10oKSAtPiB2b2lkOgphZGRfc3R1ZGVudDoKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9zdHVkZW50L2NvbnRyYWN0LnB5OjE0CiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgaW50Y18wIC8vIDAKICAgIGV4dHJhY3RfdWludDE2IC8vIG9uIGVycm9yOiBpbnZhbGlkIGFycmF5IGxlbmd0aCBoZWFkZXIKICAgIGludGNfMSAvLyAyCiAgICArCiAgICBkaWcgMQogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIGV4dHJhY3QgMiAwCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAyCiAgICBkdXAKICAgIGludGNfMCAvLyAwCiAgICBleHRyYWN0X3VpbnQxNiAvLyBvbiBlcnJvcjogaW52YWxpZCBhcnJheSBsZW5ndGggaGVhZGVyCiAgICBpbnRjXzEgLy8gMgogICAgKwogICAgZGlnIDEKICAgIGxlbgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5keW5hbWljX2FycmF5PGFyYzQudWludDg+CiAgICBleHRyYWN0IDIgMAogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMwogICAgZHVwCiAgICBpbnRjXzAgLy8gMAogICAgZXh0cmFjdF91aW50MTYgLy8gb24gZXJyb3I6IGludmFsaWQgYXJyYXkgbGVuZ3RoIGhlYWRlcgogICAgaW50Y18xIC8vIDIKICAgICsKICAgIGRpZyAxCiAgICBsZW4KICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuZHluYW1pY19hcnJheTxhcmM0LnVpbnQ4PgogICAgZXh0cmFjdCAyIDAKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDQKICAgIGR1cAogICAgaW50Y18wIC8vIDAKICAgIGV4dHJhY3RfdWludDE2IC8vIG9uIGVycm9yOiBpbnZhbGlkIGFycmF5IGxlbmd0aCBoZWFkZXIKICAgIGludGNfMSAvLyAyCiAgICArCiAgICBkaWcgMQogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIGV4dHJhY3QgMiAwCiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weToxOS0yMAogICAgLy8gIyBDcmVhdGUgYSBzaW5nbGUgc3RyaW5nIHdpdGggc2VwYXJhdG9ycyBmb3IgcmVhZGFiaWxpdHkKICAgIC8vIHN0dWRlbnRfZGF0YSA9IG5hbWUgKyAifCIgKyByb2xsX25vICsgInwiICsgY2l0eSArICJ8IiArIHBob25lX251bWJlcgogICAgdW5jb3ZlciAzCiAgICBieXRlY18wIC8vICJ8IgogICAgY29uY2F0CiAgICB1bmNvdmVyIDMKICAgIGNvbmNhdAogICAgYnl0ZWNfMCAvLyAifCIKICAgIGNvbmNhdAogICAgdW5jb3ZlciAyCiAgICBjb25jYXQKICAgIGJ5dGVjXzAgLy8gInwiCiAgICBjb25jYXQKICAgIHN3YXAKICAgIGNvbmNhdAogICAgLy8gc21hcnRfY29udHJhY3RzL3N0dWRlbnQvY29udHJhY3QucHk6MjItMjMKICAgIC8vICMgU3RvcmUgaW4gQm94TWFwIHVzaW5nIHNlbmRlcidzIGFkZHJlc3MKICAgIC8vIHNlbGYuc3R1ZGVudHNbVHhuLnNlbmRlci5ieXRlc10gPSBzdHVkZW50X2RhdGEKICAgIGJ5dGVjXzIgLy8gInN0dWRlbnRzIgogICAgdHhuIFNlbmRlcgogICAgY29uY2F0CiAgICBkdXAKICAgIGJveF9kZWwKICAgIHBvcAogICAgc3dhcAogICAgYm94X3B1dAogICAgLy8gc21hcnRfY29udHJhY3RzL3N0dWRlbnQvY29udHJhY3QucHk6MTQKICAgIC8vIEBhYmltZXRob2QoKQogICAgaW50Y18yIC8vIDEKICAgIHJldHVybgoKCi8vIHNtYXJ0X2NvbnRyYWN0cy5zdHVkZW50LmNvbnRyYWN0LlN0dWRlbnQuZ2V0X3N0dWRlbnRbcm91dGluZ10oKSAtPiB2b2lkOgpnZXRfc3R1ZGVudDoKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9zdHVkZW50L2NvbnRyYWN0LnB5OjI1CiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBwdXNoaW50IDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9zdHVkZW50L2NvbnRyYWN0LnB5OjMwCiAgICAvLyByZXR1cm4gc2VsZi5zdHVkZW50c1thZGRyZXNzLmJ5dGVzXQogICAgYnl0ZWNfMiAvLyAic3R1ZGVudHMiCiAgICBzd2FwCiAgICBjb25jYXQKICAgIGJveF9nZXQKICAgIGFzc2VydCAvLyBjaGVjayBzZWxmLnN0dWRlbnRzIGVudHJ5IGV4aXN0cwogICAgLy8gc21hcnRfY29udHJhY3RzL3N0dWRlbnQvY29udHJhY3QucHk6MjUKICAgIC8vIEBhYmltZXRob2QoKQogICAgZHVwCiAgICBsZW4KICAgIGl0b2IKICAgIGV4dHJhY3QgNiAyCiAgICBzd2FwCiAgICBjb25jYXQKICAgIGJ5dGVjXzEgLy8gMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIGludGNfMiAvLyAxCiAgICByZXR1cm4K","clear":"I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuY2xlYXJfc3RhdGVfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIHB1c2hpbnQgMQogICAgcmV0dXJuCg=="},"byteCode":{"approval":"CyADAAIBJgMBfAQVH3x1CHN0dWRlbnRzMRtBACQxGRREMRhEggMEAr7OEQTiROmUBCAbyes2GgCOAwAJADIAjQAxGRQxGBQQQzYaAUkiWSMISwEVEkRXAgCAB0hlbGxvLCBMUEkVFlcGAkxQKUxQsCRDNhoBSSJZIwhLARUSRFcCADYaAkkiWSMISwEVEkRXAgA2GgNJIlkjCEsBFRJEVwIANhoESSJZIwhLARUSRFcCAE8DKFBPA1AoUE8CUChQTFAqMQBQSbxITL8kQzYaAUkVgSASRCpMUL5ESRUWVwYCTFApTFCwJEM=","clear":"C4EBQw=="},"events":[],"templateVariables":{}} as unknown as Arc56Contract
 
 /**
  * A state record containing binary data
@@ -74,12 +73,13 @@ export type StudentArgs = {
     'hello(string)string': {
       name: string
     }
-    'add_student(string,string,string)void': {
+    'add_student(string,string,string,string)void': {
       name: string
       rollNo: string
       city: string
+      phoneNumber: string
     }
-    'get_student(string)string': {
+    'get_student(address)string': {
       address: string
     }
   }
@@ -88,8 +88,8 @@ export type StudentArgs = {
    */
   tuple: {
     'hello(string)string': [name: string]
-    'add_student(string,string,string)void': [name: string, rollNo: string, city: string]
-    'get_student(string)string': [address: string]
+    'add_student(string,string,string,string)void': [name: string, rollNo: string, city: string, phoneNumber: string]
+    'get_student(address)string': [address: string]
   }
 }
 
@@ -98,8 +98,8 @@ export type StudentArgs = {
  */
 export type StudentReturns = {
   'hello(string)string': string
-  'add_student(string,string,string)void': void
-  'get_student(string)string': string
+  'add_student(string,string,string,string)void': void
+  'get_student(address)string': string
 }
 
 /**
@@ -115,16 +115,27 @@ export type StudentTypes = {
       argsTuple: StudentArgs['tuple']['hello(string)string']
       returns: StudentReturns['hello(string)string']
     }>
-    & Record<'add_student(string,string,string)void' | 'add_student', {
-      argsObj: StudentArgs['obj']['add_student(string,string,string)void']
-      argsTuple: StudentArgs['tuple']['add_student(string,string,string)void']
-      returns: StudentReturns['add_student(string,string,string)void']
+    & Record<'add_student(string,string,string,string)void' | 'add_student', {
+      argsObj: StudentArgs['obj']['add_student(string,string,string,string)void']
+      argsTuple: StudentArgs['tuple']['add_student(string,string,string,string)void']
+      returns: StudentReturns['add_student(string,string,string,string)void']
     }>
-    & Record<'get_student(string)string' | 'get_student', {
-      argsObj: StudentArgs['obj']['get_student(string)string']
-      argsTuple: StudentArgs['tuple']['get_student(string)string']
-      returns: StudentReturns['get_student(string)string']
+    & Record<'get_student(address)string' | 'get_student', {
+      argsObj: StudentArgs['obj']['get_student(address)string']
+      argsTuple: StudentArgs['tuple']['get_student(address)string']
+      returns: StudentReturns['get_student(address)string']
     }>
+  /**
+   * Defines the shape of the state of the application.
+   */
+  state: {
+    box: {
+      keys: {}
+      maps: {
+        students: Map<Uint8Array | string, string>
+      }
+    }
+  }
 }
 
 /**
@@ -153,6 +164,11 @@ export type MethodArgs<TSignature extends StudentSignatures> = StudentTypes['met
  * Maps a method signature from the Student smart contract to the method's return type
  */
 export type MethodReturn<TSignature extends StudentSignatures> = StudentTypes['methods'][TSignature]['returns']
+
+/**
+ * Defines the shape of the keyed box state of the application.
+ */
+export type BoxKeysState = StudentTypes['state']['box']['keys']
 
 
 /**
@@ -189,32 +205,32 @@ export abstract class StudentParamsFactory {
     }
   }
   /**
-   * Constructs a no op call for the add_student(string,string,string)void ABI method
+   * Constructs a no op call for the add_student(string,string,string,string)void ABI method
    *
-   * Stores student details in a box indexed by their wallet address.
+   * Stores student details as a single pipe-separated string.
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static addStudent(params: CallParams<StudentArgs['obj']['add_student(string,string,string)void'] | StudentArgs['tuple']['add_student(string,string,string)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static addStudent(params: CallParams<StudentArgs['obj']['add_student(string,string,string,string)void'] | StudentArgs['tuple']['add_student(string,string,string,string)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'add_student(string,string,string)void' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.name, params.args.rollNo, params.args.city],
+      method: 'add_student(string,string,string,string)void' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.name, params.args.rollNo, params.args.city, params.args.phoneNumber],
     }
   }
   /**
-   * Constructs a no op call for the get_student(string)string ABI method
+   * Constructs a no op call for the get_student(address)string ABI method
    *
-   * Retrieves student details for a given address string.
+   * Retrieves the raw student data string.
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static getStudent(params: CallParams<StudentArgs['obj']['get_student(string)string'] | StudentArgs['tuple']['get_student(string)string']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static getStudent(params: CallParams<StudentArgs['obj']['get_student(address)string'] | StudentArgs['tuple']['get_student(address)string']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'get_student(string)string' as const,
+      method: 'get_student(address)string' as const,
       args: Array.isArray(params.args) ? params.args : [params.args.address],
     }
   }
@@ -388,7 +404,7 @@ export class StudentClient {
       appSpec: APP_SPEC,
     })
   }
-  
+
   /**
    * Checks for decode errors on the given return value and maps the return value to the return type for the given method
    * @returns The typed return value or undefined if there was no value
@@ -396,7 +412,7 @@ export class StudentClient {
   decodeReturnValue<TSignature extends StudentNonVoidMethodSignatures>(method: TSignature, returnValue: ABIReturn | undefined) {
     return returnValue !== undefined ? getArc56ReturnValue<MethodReturn<TSignature>>(returnValue, this.appClient.getABIMethod(method), APP_SPEC.structs) : undefined
   }
-  
+
   /**
    * Returns a new `StudentClient` client, resolving the app by creator address and name
    * using AlgoKit app deployment semantics (i.e. looking for the app creation transaction note).
@@ -469,26 +485,26 @@ export class StudentClient {
     },
 
     /**
-     * Makes a call to the Student smart contract using the `add_student(string,string,string)void` ABI method.
+     * Makes a call to the Student smart contract using the `add_student(string,string,string,string)void` ABI method.
      *
-     * Stores student details in a box indexed by their wallet address.
+     * Stores student details as a single pipe-separated string.
      *
      * @param params The params for the smart contract call
      * @returns The call params
      */
-    addStudent: (params: CallParams<StudentArgs['obj']['add_student(string,string,string)void'] | StudentArgs['tuple']['add_student(string,string,string)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+    addStudent: (params: CallParams<StudentArgs['obj']['add_student(string,string,string,string)void'] | StudentArgs['tuple']['add_student(string,string,string,string)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
       return this.appClient.params.call(StudentParamsFactory.addStudent(params))
     },
 
     /**
-     * Makes a call to the Student smart contract using the `get_student(string)string` ABI method.
+     * Makes a call to the Student smart contract using the `get_student(address)string` ABI method.
      *
-     * Retrieves student details for a given address string.
+     * Retrieves the raw student data string.
      *
      * @param params The params for the smart contract call
      * @returns The call params
      */
-    getStudent: (params: CallParams<StudentArgs['obj']['get_student(string)string'] | StudentArgs['tuple']['get_student(string)string']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+    getStudent: (params: CallParams<StudentArgs['obj']['get_student(address)string'] | StudentArgs['tuple']['get_student(address)string']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
       return this.appClient.params.call(StudentParamsFactory.getStudent(params))
     },
 
@@ -519,26 +535,26 @@ export class StudentClient {
     },
 
     /**
-     * Makes a call to the Student smart contract using the `add_student(string,string,string)void` ABI method.
+     * Makes a call to the Student smart contract using the `add_student(string,string,string,string)void` ABI method.
      *
-     * Stores student details in a box indexed by their wallet address.
+     * Stores student details as a single pipe-separated string.
      *
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
-    addStudent: (params: CallParams<StudentArgs['obj']['add_student(string,string,string)void'] | StudentArgs['tuple']['add_student(string,string,string)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+    addStudent: (params: CallParams<StudentArgs['obj']['add_student(string,string,string,string)void'] | StudentArgs['tuple']['add_student(string,string,string,string)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
       return this.appClient.createTransaction.call(StudentParamsFactory.addStudent(params))
     },
 
     /**
-     * Makes a call to the Student smart contract using the `get_student(string)string` ABI method.
+     * Makes a call to the Student smart contract using the `get_student(address)string` ABI method.
      *
-     * Retrieves student details for a given address string.
+     * Retrieves the raw student data string.
      *
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
-    getStudent: (params: CallParams<StudentArgs['obj']['get_student(string)string'] | StudentArgs['tuple']['get_student(string)string']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+    getStudent: (params: CallParams<StudentArgs['obj']['get_student(address)string'] | StudentArgs['tuple']['get_student(address)string']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
       return this.appClient.createTransaction.call(StudentParamsFactory.getStudent(params))
     },
 
@@ -570,29 +586,29 @@ export class StudentClient {
     },
 
     /**
-     * Makes a call to the Student smart contract using the `add_student(string,string,string)void` ABI method.
+     * Makes a call to the Student smart contract using the `add_student(string,string,string,string)void` ABI method.
      *
-     * Stores student details in a box indexed by their wallet address.
+     * Stores student details as a single pipe-separated string.
      *
      * @param params The params for the smart contract call
      * @returns The call result
      */
-    addStudent: async (params: CallParams<StudentArgs['obj']['add_student(string,string,string)void'] | StudentArgs['tuple']['add_student(string,string,string)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+    addStudent: async (params: CallParams<StudentArgs['obj']['add_student(string,string,string,string)void'] | StudentArgs['tuple']['add_student(string,string,string,string)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
       const result = await this.appClient.send.call(StudentParamsFactory.addStudent(params))
-      return {...result, return: result.return as unknown as (undefined | StudentReturns['add_student(string,string,string)void'])}
+      return {...result, return: result.return as unknown as (undefined | StudentReturns['add_student(string,string,string,string)void'])}
     },
 
     /**
-     * Makes a call to the Student smart contract using the `get_student(string)string` ABI method.
+     * Makes a call to the Student smart contract using the `get_student(address)string` ABI method.
      *
-     * Retrieves student details for a given address string.
+     * Retrieves the raw student data string.
      *
      * @param params The params for the smart contract call
      * @returns The call result
      */
-    getStudent: async (params: CallParams<StudentArgs['obj']['get_student(string)string'] | StudentArgs['tuple']['get_student(string)string']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+    getStudent: async (params: CallParams<StudentArgs['obj']['get_student(address)string'] | StudentArgs['tuple']['get_student(address)string']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
       const result = await this.appClient.send.call(StudentParamsFactory.getStudent(params))
-      return {...result, return: result.return as unknown as (undefined | StudentReturns['get_student(string)string'])}
+      return {...result, return: result.return as unknown as (undefined | StudentReturns['get_student(address)string'])}
     },
 
   }
@@ -611,6 +627,32 @@ export class StudentClient {
    * Methods to access state for the current Student app
    */
   state = {
+    /**
+     * Methods to access box state for the current Student app
+     */
+    box: {
+      /**
+       * Get all current keyed values from box state
+       */
+      getAll: async (): Promise<Partial<Expand<BoxKeysState>>> => {
+        const result = await this.appClient.state.box.getAll()
+        return {
+        }
+      },
+      /**
+       * Get values from the students map in box state
+       */
+      students: {
+        /**
+         * Get all current values of the students map in box state
+         */
+        getMap: async (): Promise<Map<Uint8Array, string>> => { return (await this.appClient.state.box.getMap("students")) as Map<Uint8Array, string> },
+        /**
+         * Get a current value of the students map by key from box state
+         */
+        value: async (key: Uint8Array | string): Promise<string | undefined> => { return await this.appClient.state.box.getMapValue("students", key) as string | undefined },
+      },
+    },
   }
 
   public newGroup(): StudentComposer {
@@ -628,19 +670,19 @@ export class StudentClient {
         return this
       },
       /**
-       * Add a add_student(string,string,string)void method call against the Student contract
+       * Add a add_student(string,string,string,string)void method call against the Student contract
        */
-      addStudent(params: CallParams<StudentArgs['obj']['add_student(string,string,string)void'] | StudentArgs['tuple']['add_student(string,string,string)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+      addStudent(params: CallParams<StudentArgs['obj']['add_student(string,string,string,string)void'] | StudentArgs['tuple']['add_student(string,string,string,string)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
         promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.addStudent(params)))
         resultMappers.push(undefined)
         return this
       },
       /**
-       * Add a get_student(string)string method call against the Student contract
+       * Add a get_student(address)string method call against the Student contract
        */
-      getStudent(params: CallParams<StudentArgs['obj']['get_student(string)string'] | StudentArgs['tuple']['get_student(string)string']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+      getStudent(params: CallParams<StudentArgs['obj']['get_student(address)string'] | StudentArgs['tuple']['get_student(address)string']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
         promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.getStudent(params)))
-        resultMappers.push((v) => client.decodeReturnValue('get_student(string)string', v))
+        resultMappers.push((v) => client.decodeReturnValue('get_student(address)string', v))
         return this
       },
       /**
@@ -688,26 +730,26 @@ export type StudentComposer<TReturns extends [...any[]] = []> = {
   hello(params?: CallParams<StudentArgs['obj']['hello(string)string'] | StudentArgs['tuple']['hello(string)string']>): StudentComposer<[...TReturns, StudentReturns['hello(string)string'] | undefined]>
 
   /**
-   * Calls the add_student(string,string,string)void ABI method.
+   * Calls the add_student(string,string,string,string)void ABI method.
    *
-   * Stores student details in a box indexed by their wallet address.
+   * Stores student details as a single pipe-separated string.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  addStudent(params?: CallParams<StudentArgs['obj']['add_student(string,string,string)void'] | StudentArgs['tuple']['add_student(string,string,string)void']>): StudentComposer<[...TReturns, StudentReturns['add_student(string,string,string)void'] | undefined]>
+  addStudent(params?: CallParams<StudentArgs['obj']['add_student(string,string,string,string)void'] | StudentArgs['tuple']['add_student(string,string,string,string)void']>): StudentComposer<[...TReturns, StudentReturns['add_student(string,string,string,string)void'] | undefined]>
 
   /**
-   * Calls the get_student(string)string ABI method.
+   * Calls the get_student(address)string ABI method.
    *
-   * Retrieves student details for a given address string.
+   * Retrieves the raw student data string.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  getStudent(params?: CallParams<StudentArgs['obj']['get_student(string)string'] | StudentArgs['tuple']['get_student(string)string']>): StudentComposer<[...TReturns, StudentReturns['get_student(string)string'] | undefined]>
+  getStudent(params?: CallParams<StudentArgs['obj']['get_student(address)string'] | StudentArgs['tuple']['get_student(address)string']>): StudentComposer<[...TReturns, StudentReturns['get_student(address)string'] | undefined]>
 
   /**
    * Makes a clear_state call to an existing instance of the Student smart contract.
@@ -731,9 +773,9 @@ export type StudentComposer<TReturns extends [...any[]] = []> = {
   /**
    * Simulates the transaction group and returns the result
    */
-  simulate(): Promise<StudentComposerResults<TReturns> & { simulateResponse: SimulateResponse }>
-  simulate(options: SkipSignaturesSimulateOptions): Promise<StudentComposerResults<TReturns> & { simulateResponse: SimulateResponse }>
-  simulate(options: RawSimulateOptions): Promise<StudentComposerResults<TReturns> & { simulateResponse: SimulateResponse }>
+  simulate(): Promise<StudentComposerResults<TReturns> & { simulateResponse: modelsv2.SimulateResponse }>
+  simulate(options: SkipSignaturesSimulateOptions): Promise<StudentComposerResults<TReturns> & { simulateResponse: modelsv2.SimulateResponse }>
+  simulate(options: RawSimulateOptions): Promise<StudentComposerResults<TReturns> & { simulateResponse: modelsv2.SimulateResponse }>
   /**
    * Sends the transaction group to the network and returns the results
    */
