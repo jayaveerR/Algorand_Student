@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 def deploy() -> None:
     from smart_contracts.artifacts.student.student_client import (
         AddStudentArgs,
-        HelloArgs,
         StudentFactory,
     )
 
@@ -42,16 +41,11 @@ def deploy() -> None:
         args=AddStudentArgs(
             name="Deployer Student",
             roll_no="24H71F0080",
-            city="Blockchain City"
+            city="Blockchain City",
+            phone_number="1234567890"
         ),
-        # Boxes need to be referenced. We use the deployer's address as the key.
-        box_references=[algokit_utils.BoxReference(app_id=0, name=deployer_.address)]
+        params=algokit_utils.CommonAppCallParams(
+            box_references=[algokit_utils.BoxReference(app_id=0, name=deployer_.address)]
+        )
     )
     logger.info(f"Registered example student with Roll ID: 24H71F0080")
-
-    name = "world"
-    response = app_client.send.hello(args=HelloArgs(name=name))
-    logger.info(
-        f"Called hello on {app_client.app_name} ({app_client.app_id}) "
-        f"with name={name}, received: {response.abi_return}"
-    )

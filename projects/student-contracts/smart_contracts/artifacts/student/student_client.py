@@ -19,7 +19,7 @@ from algosdk.v2client.models import SimulateTraceConfig
 import algokit_utils
 from algokit_utils import AlgorandClient as _AlgoKitAlgorandClient
 
-_APP_SPEC_JSON = r"""{"arcs": [22, 28], "bareActions": {"call": [], "create": ["NoOp"]}, "methods": [{"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "string", "name": "name"}], "name": "hello", "returns": {"type": "string"}, "events": [], "readonly": false, "recommendations": {}}, {"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "string", "name": "name"}, {"type": "string", "name": "roll_no"}, {"type": "string", "name": "city"}], "name": "add_student", "returns": {"type": "void"}, "desc": "Stores student details in a box indexed by their wallet address.", "events": [], "readonly": false, "recommendations": {}}, {"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "string", "name": "address"}], "name": "get_student", "returns": {"type": "string"}, "desc": "Retrieves student details for a given address string.", "events": [], "readonly": false, "recommendations": {}}], "name": "Student", "state": {"keys": {"box": {}, "global": {}, "local": {}}, "maps": {"box": {}, "global": {}, "local": {}}, "schema": {"global": {"bytes": 0, "ints": 0}, "local": {"bytes": 0, "ints": 0}}}, "structs": {}, "byteCode": {"approval": "CyADAAIBMRtBACQxGRREMRhEggMEAr7OEQQIIMx2BPFI5+02GgCOAwAJADcAgAAxGRQxGBQQQzYaAUkiWSMISwEVEkRXAgCAB0hlbGxvLCBMUEkVFlcGAkxQgAQVH3x1TFCwJEM2GgFJIlkjCEsBFRJEVwIANhoCSSJZIwhLARUSRFcCADYaA0kiWSMISwEVEkRXAgAxAE8DgAF8UE8DUIABfFBPAlBLAbxIvyRDNhoBSSJZIwhMFRJEgB8VH3x1ABlEYXRhIHJldHJpZXZhbCBsb2dpYyBoZXJlsCRD", "clear": "C4EBQw=="}, "events": [], "networks": {}, "source": {"approval": "I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuYXBwcm92YWxfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIGludGNibG9jayAwIDIgMQogICAgLy8gc21hcnRfY29udHJhY3RzL3N0dWRlbnQvY29udHJhY3QucHk6NQogICAgLy8gY2xhc3MgU3R1ZGVudChBUkM0Q29udHJhY3QpOgogICAgdHhuIE51bUFwcEFyZ3MKICAgIGJ6IG1haW5fX19hbGdvcHlfZGVmYXVsdF9jcmVhdGVAMTAKICAgIHR4biBPbkNvbXBsZXRpb24KICAgICEKICAgIGFzc2VydAogICAgdHhuIEFwcGxpY2F0aW9uSUQKICAgIGFzc2VydAogICAgcHVzaGJ5dGVzcyAweDAyYmVjZTExIDB4MDgyMGNjNzYgMHhmMTQ4ZTdlZCAvLyBtZXRob2QgImhlbGxvKHN0cmluZylzdHJpbmciLCBtZXRob2QgImFkZF9zdHVkZW50KHN0cmluZyxzdHJpbmcsc3RyaW5nKXZvaWQiLCBtZXRob2QgImdldF9zdHVkZW50KHN0cmluZylzdHJpbmciCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAwCiAgICBtYXRjaCBoZWxsbyBhZGRfc3R1ZGVudCBnZXRfc3R1ZGVudAogICAgZXJyCgptYWluX19fYWxnb3B5X2RlZmF1bHRfY3JlYXRlQDEwOgogICAgdHhuIE9uQ29tcGxldGlvbgogICAgIQogICAgdHhuIEFwcGxpY2F0aW9uSUQKICAgICEKICAgICYmCiAgICByZXR1cm4KCgovLyBzbWFydF9jb250cmFjdHMuc3R1ZGVudC5jb250cmFjdC5TdHVkZW50LmhlbGxvW3JvdXRpbmddKCkgLT4gdm9pZDoKaGVsbG86CiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weTo2CiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgaW50Y18wIC8vIDAKICAgIGV4dHJhY3RfdWludDE2IC8vIG9uIGVycm9yOiBpbnZhbGlkIGFycmF5IGxlbmd0aCBoZWFkZXIKICAgIGludGNfMSAvLyAyCiAgICArCiAgICBkaWcgMQogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIGV4dHJhY3QgMiAwCiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weTo4CiAgICAvLyByZXR1cm4gIkhlbGxvLCAiICsgbmFtZQogICAgcHVzaGJ5dGVzICJIZWxsbywgIgogICAgc3dhcAogICAgY29uY2F0CiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weTo2CiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIGR1cAogICAgbGVuCiAgICBpdG9iCiAgICBleHRyYWN0IDYgMgogICAgc3dhcAogICAgY29uY2F0CiAgICBwdXNoYnl0ZXMgMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIGludGNfMiAvLyAxCiAgICByZXR1cm4KCgovLyBzbWFydF9jb250cmFjdHMuc3R1ZGVudC5jb250cmFjdC5TdHVkZW50LmFkZF9zdHVkZW50W3JvdXRpbmddKCkgLT4gdm9pZDoKYWRkX3N0dWRlbnQ6CiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weToxMAogICAgLy8gQGFiaW1ldGhvZCgpCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGludGNfMCAvLyAwCiAgICBleHRyYWN0X3VpbnQxNiAvLyBvbiBlcnJvcjogaW52YWxpZCBhcnJheSBsZW5ndGggaGVhZGVyCiAgICBpbnRjXzEgLy8gMgogICAgKwogICAgZGlnIDEKICAgIGxlbgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5keW5hbWljX2FycmF5PGFyYzQudWludDg+CiAgICBleHRyYWN0IDIgMAogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBpbnRjXzAgLy8gMAogICAgZXh0cmFjdF91aW50MTYgLy8gb24gZXJyb3I6IGludmFsaWQgYXJyYXkgbGVuZ3RoIGhlYWRlcgogICAgaW50Y18xIC8vIDIKICAgICsKICAgIGRpZyAxCiAgICBsZW4KICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuZHluYW1pY19hcnJheTxhcmM0LnVpbnQ4PgogICAgZXh0cmFjdCAyIDAKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDMKICAgIGR1cAogICAgaW50Y18wIC8vIDAKICAgIGV4dHJhY3RfdWludDE2IC8vIG9uIGVycm9yOiBpbnZhbGlkIGFycmF5IGxlbmd0aCBoZWFkZXIKICAgIGludGNfMSAvLyAyCiAgICArCiAgICBkaWcgMQogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIGV4dHJhY3QgMiAwCiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weToxNQogICAgLy8gYm94X2tleSA9IFR4bi5zZW5kZXIuYnl0ZXMKICAgIHR4biBTZW5kZXIKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9zdHVkZW50L2NvbnRyYWN0LnB5OjE2CiAgICAvLyBzdHVkZW50X2RhdGEgPSBuYW1lICsgInwiICsgcm9sbF9ubyArICJ8IiArIGNpdHkKICAgIHVuY292ZXIgMwogICAgcHVzaGJ5dGVzICJ8IgogICAgY29uY2F0CiAgICB1bmNvdmVyIDMKICAgIGNvbmNhdAogICAgcHVzaGJ5dGVzICJ8IgogICAgY29uY2F0CiAgICB1bmNvdmVyIDIKICAgIGNvbmNhdAogICAgLy8gc21hcnRfY29udHJhY3RzL3N0dWRlbnQvY29udHJhY3QucHk6MTgtMTkKICAgIC8vICMgRGVsZXRlIGlmIGV4aXN0cwogICAgLy8gZGVsZXRlZCA9IG9wLkJveC5kZWxldGUoYm94X2tleSkKICAgIGRpZyAxCiAgICBib3hfZGVsCiAgICBwb3AKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9zdHVkZW50L2NvbnRyYWN0LnB5OjIxLTIyCiAgICAvLyAjIFN0b3JlIHRoZSBkYXRhCiAgICAvLyBvcC5Cb3gucHV0KGJveF9rZXksIHN0dWRlbnRfZGF0YS5ieXRlcykKICAgIGJveF9wdXQKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9zdHVkZW50L2NvbnRyYWN0LnB5OjEwCiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIGludGNfMiAvLyAxCiAgICByZXR1cm4KCgovLyBzbWFydF9jb250cmFjdHMuc3R1ZGVudC5jb250cmFjdC5TdHVkZW50LmdldF9zdHVkZW50W3JvdXRpbmddKCkgLT4gdm9pZDoKZ2V0X3N0dWRlbnQ6CiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weToyNAogICAgLy8gQGFiaW1ldGhvZCgpCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGludGNfMCAvLyAwCiAgICBleHRyYWN0X3VpbnQxNiAvLyBvbiBlcnJvcjogaW52YWxpZCBhcnJheSBsZW5ndGggaGVhZGVyCiAgICBpbnRjXzEgLy8gMgogICAgKwogICAgc3dhcAogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIHB1c2hieXRlcyAweDE1MWY3Yzc1MDAxOTQ0NjE3NDYxMjA3MjY1NzQ3MjY5NjU3NjYxNmMyMDZjNmY2NzY5NjMyMDY4NjU3MjY1CiAgICBsb2cKICAgIGludGNfMiAvLyAxCiAgICByZXR1cm4K", "clear": "I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuY2xlYXJfc3RhdGVfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIHB1c2hpbnQgMQogICAgcmV0dXJuCg=="}, "sourceInfo": {"approval": {"pcOffsetMethod": "none", "sourceInfo": [{"pc": [60, 106, 122, 138, 179], "errorMessage": "invalid array length header"}, {"pc": [67, 113, 129, 145, 185], "errorMessage": "invalid number of bytes for arc4.dynamic_array<arc4.uint8>"}]}, "clear": {"pcOffsetMethod": "none", "sourceInfo": []}}, "templateVariables": {}}"""
+_APP_SPEC_JSON = r"""{"arcs": [22, 28], "bareActions": {"call": [], "create": ["NoOp"]}, "methods": [{"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "string", "name": "name"}, {"type": "string", "name": "roll_no"}, {"type": "string", "name": "city"}, {"type": "string", "name": "phone_number"}], "name": "add_student", "returns": {"type": "void"}, "desc": "Stores student details as a single pipe-separated string.", "events": [], "readonly": false, "recommendations": {}}], "name": "Student", "state": {"keys": {"box": {}, "global": {}, "local": {}}, "maps": {"box": {"students": {"keyType": "AVMBytes", "valueType": "AVMString", "prefix": "c3R1ZGVudHM="}}, "global": {}, "local": {}}, "schema": {"global": {"bytes": 0, "ints": 0}, "local": {"bytes": 0, "ints": 0}}}, "structs": {}, "byteCode": {"approval": "CyACAAImAQF8MRtBABiABOJE6ZQ2GgCOAQABADEZFDEYEERCAAgxGRQxGBQQQzYaAUkiWSMISwEVEkRXAgA2GgJJIlkjCEsBFRJEVwIANhoDSSJZIwhLARUSRFcCADYaBEkiWSMISwEVEkRXAgBPAyhQTwNQKFBPAlAoUExQgAhzdHVkZW50czEAUEm8SEy/gQFD", "clear": "C4EBQw=="}, "events": [], "networks": {}, "source": {"approval": "I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuYXBwcm92YWxfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIGludGNibG9jayAwIDIKICAgIGJ5dGVjYmxvY2sgInwiCiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weTo1CiAgICAvLyBjbGFzcyBTdHVkZW50KEFSQzRDb250cmFjdCk6CiAgICB0eG4gTnVtQXBwQXJncwogICAgYnogbWFpbl9fX2FsZ29weV9kZWZhdWx0X2NyZWF0ZUA3CiAgICBwdXNoYnl0ZXMgMHhlMjQ0ZTk5NCAvLyBtZXRob2QgImFkZF9zdHVkZW50KHN0cmluZyxzdHJpbmcsc3RyaW5nLHN0cmluZyl2b2lkIgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMAogICAgbWF0Y2ggbWFpbl9hZGRfc3R1ZGVudF9yb3V0ZUA1CiAgICBlcnIKCm1haW5fYWRkX3N0dWRlbnRfcm91dGVANToKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9zdHVkZW50L2NvbnRyYWN0LnB5OjkKICAgIC8vIEBhYmltZXRob2QoKQogICAgdHhuIE9uQ29tcGxldGlvbgogICAgIQogICAgdHhuIEFwcGxpY2F0aW9uSUQKICAgICYmCiAgICBhc3NlcnQKICAgIGIgYWRkX3N0dWRlbnQKCm1haW5fX19hbGdvcHlfZGVmYXVsdF9jcmVhdGVANzoKICAgIHR4biBPbkNvbXBsZXRpb24KICAgICEKICAgIHR4biBBcHBsaWNhdGlvbklECiAgICAhCiAgICAmJgogICAgcmV0dXJuCgoKLy8gc21hcnRfY29udHJhY3RzLnN0dWRlbnQuY29udHJhY3QuU3R1ZGVudC5hZGRfc3R1ZGVudFtyb3V0aW5nXSgpIC0+IHZvaWQ6CmFkZF9zdHVkZW50OgogICAgLy8gc21hcnRfY29udHJhY3RzL3N0dWRlbnQvY29udHJhY3QucHk6OQogICAgLy8gQGFiaW1ldGhvZCgpCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGludGNfMCAvLyAwCiAgICBleHRyYWN0X3VpbnQxNiAvLyBvbiBlcnJvcjogaW52YWxpZCBhcnJheSBsZW5ndGggaGVhZGVyCiAgICBpbnRjXzEgLy8gMgogICAgKwogICAgZGlnIDEKICAgIGxlbgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5keW5hbWljX2FycmF5PGFyYzQudWludDg+CiAgICBleHRyYWN0IDIgMAogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBpbnRjXzAgLy8gMAogICAgZXh0cmFjdF91aW50MTYgLy8gb24gZXJyb3I6IGludmFsaWQgYXJyYXkgbGVuZ3RoIGhlYWRlcgogICAgaW50Y18xIC8vIDIKICAgICsKICAgIGRpZyAxCiAgICBsZW4KICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuZHluYW1pY19hcnJheTxhcmM0LnVpbnQ4PgogICAgZXh0cmFjdCAyIDAKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDMKICAgIGR1cAogICAgaW50Y18wIC8vIDAKICAgIGV4dHJhY3RfdWludDE2IC8vIG9uIGVycm9yOiBpbnZhbGlkIGFycmF5IGxlbmd0aCBoZWFkZXIKICAgIGludGNfMSAvLyAyCiAgICArCiAgICBkaWcgMQogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIGV4dHJhY3QgMiAwCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyA0CiAgICBkdXAKICAgIGludGNfMCAvLyAwCiAgICBleHRyYWN0X3VpbnQxNiAvLyBvbiBlcnJvcjogaW52YWxpZCBhcnJheSBsZW5ndGggaGVhZGVyCiAgICBpbnRjXzEgLy8gMgogICAgKwogICAgZGlnIDEKICAgIGxlbgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5keW5hbWljX2FycmF5PGFyYzQudWludDg+CiAgICBleHRyYWN0IDIgMAogICAgLy8gc21hcnRfY29udHJhY3RzL3N0dWRlbnQvY29udHJhY3QucHk6MTQKICAgIC8vIHN0dWRlbnRfZGF0YSA9IG5hbWUgKyAifCIgKyByb2xsX25vICsgInwiICsgY2l0eSArICJ8IiArIHBob25lX251bWJlcgogICAgdW5jb3ZlciAzCiAgICBieXRlY18wIC8vICJ8IgogICAgY29uY2F0CiAgICB1bmNvdmVyIDMKICAgIGNvbmNhdAogICAgYnl0ZWNfMCAvLyAifCIKICAgIGNvbmNhdAogICAgdW5jb3ZlciAyCiAgICBjb25jYXQKICAgIGJ5dGVjXzAgLy8gInwiCiAgICBjb25jYXQKICAgIHN3YXAKICAgIGNvbmNhdAogICAgLy8gc21hcnRfY29udHJhY3RzL3N0dWRlbnQvY29udHJhY3QucHk6MTUKICAgIC8vIHNlbGYuc3R1ZGVudHNbVHhuLnNlbmRlci5ieXRlc10gPSBzdHVkZW50X2RhdGEKICAgIHB1c2hieXRlcyAic3R1ZGVudHMiCiAgICB0eG4gU2VuZGVyCiAgICBjb25jYXQKICAgIGR1cAogICAgYm94X2RlbAogICAgcG9wCiAgICBzd2FwCiAgICBib3hfcHV0CiAgICAvLyBzbWFydF9jb250cmFjdHMvc3R1ZGVudC9jb250cmFjdC5weTo5CiAgICAvLyBAYWJpbWV0aG9kKCkKICAgIHB1c2hpbnQgMQogICAgcmV0dXJuCg==", "clear": "I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuY2xlYXJfc3RhdGVfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIHB1c2hpbnQgMQogICAgcmV0dXJuCg=="}, "sourceInfo": {"approval": {"pcOffsetMethod": "none", "sourceInfo": [{"pc": [51, 67, 83, 99], "errorMessage": "invalid array length header"}, {"pc": [58, 74, 90, 106], "errorMessage": "invalid number of bytes for arc4.dynamic_array<arc4.uint8>"}]}, "clear": {"pcOffsetMethod": "none", "sourceInfo": []}}, "templateVariables": {}}"""
 APP_SPEC = algokit_utils.Arc56Contract.from_json(_APP_SPEC_JSON)
 
 def _parse_abi_args(args: object | None = None) -> list[object] | None:
@@ -65,75 +65,32 @@ def _init_dataclass(cls: type, data: dict) -> object:
     return cls(**field_values)
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
-class HelloArgs:
-    """Dataclass for hello arguments"""
-    name: str
-
-    @property
-    def abi_method_signature(self) -> str:
-        return "hello(string)string"
-
-@dataclasses.dataclass(frozen=True, kw_only=True)
 class AddStudentArgs:
     """Dataclass for add_student arguments"""
     name: str
     roll_no: str
     city: str
+    phone_number: str
 
     @property
     def abi_method_signature(self) -> str:
-        return "add_student(string,string,string)void"
-
-@dataclasses.dataclass(frozen=True, kw_only=True)
-class GetStudentArgs:
-    """Dataclass for get_student arguments"""
-    address: str
-
-    @property
-    def abi_method_signature(self) -> str:
-        return "get_student(string)string"
+        return "add_student(string,string,string,string)void"
 
 
 class StudentParams:
     def __init__(self, app_client: algokit_utils.AppClient):
         self.app_client = app_client
 
-    def hello(
-        self,
-        args: tuple[str] | HelloArgs,
-        params: algokit_utils.CommonAppCallParams | None = None
-    ) -> algokit_utils.AppCallMethodCallParams:
-        method_args = _parse_abi_args(args)
-        params = params or algokit_utils.CommonAppCallParams()
-        return self.app_client.params.call(algokit_utils.AppClientMethodCallParams(**{
-            **dataclasses.asdict(params),
-            "method": "hello(string)string",
-            "args": method_args,
-        }))
-
     def add_student(
         self,
-        args: tuple[str, str, str] | AddStudentArgs,
+        args: tuple[str, str, str, str] | AddStudentArgs,
         params: algokit_utils.CommonAppCallParams | None = None
     ) -> algokit_utils.AppCallMethodCallParams:
         method_args = _parse_abi_args(args)
         params = params or algokit_utils.CommonAppCallParams()
         return self.app_client.params.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "add_student(string,string,string)void",
-            "args": method_args,
-        }))
-
-    def get_student(
-        self,
-        args: tuple[str] | GetStudentArgs,
-        params: algokit_utils.CommonAppCallParams | None = None
-    ) -> algokit_utils.AppCallMethodCallParams:
-        method_args = _parse_abi_args(args)
-        params = params or algokit_utils.CommonAppCallParams()
-        return self.app_client.params.call(algokit_utils.AppClientMethodCallParams(**{
-            **dataclasses.asdict(params),
-            "method": "get_student(string)string",
+            "method": "add_student(string,string,string,string)void",
             "args": method_args,
         }))
 
@@ -152,42 +109,16 @@ class StudentCreateTransactionParams:
     def __init__(self, app_client: algokit_utils.AppClient):
         self.app_client = app_client
 
-    def hello(
-        self,
-        args: tuple[str] | HelloArgs,
-        params: algokit_utils.CommonAppCallParams | None = None
-    ) -> algokit_utils.BuiltTransactions:
-        method_args = _parse_abi_args(args)
-        params = params or algokit_utils.CommonAppCallParams()
-        return self.app_client.create_transaction.call(algokit_utils.AppClientMethodCallParams(**{
-            **dataclasses.asdict(params),
-            "method": "hello(string)string",
-            "args": method_args,
-        }))
-
     def add_student(
         self,
-        args: tuple[str, str, str] | AddStudentArgs,
+        args: tuple[str, str, str, str] | AddStudentArgs,
         params: algokit_utils.CommonAppCallParams | None = None
     ) -> algokit_utils.BuiltTransactions:
         method_args = _parse_abi_args(args)
         params = params or algokit_utils.CommonAppCallParams()
         return self.app_client.create_transaction.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "add_student(string,string,string)void",
-            "args": method_args,
-        }))
-
-    def get_student(
-        self,
-        args: tuple[str] | GetStudentArgs,
-        params: algokit_utils.CommonAppCallParams | None = None
-    ) -> algokit_utils.BuiltTransactions:
-        method_args = _parse_abi_args(args)
-        params = params or algokit_utils.CommonAppCallParams()
-        return self.app_client.create_transaction.call(algokit_utils.AppClientMethodCallParams(**{
-            **dataclasses.asdict(params),
-            "method": "get_student(string)string",
+            "method": "add_student(string,string,string,string)void",
             "args": method_args,
         }))
 
@@ -206,25 +137,9 @@ class StudentSend:
     def __init__(self, app_client: algokit_utils.AppClient):
         self.app_client = app_client
 
-    def hello(
-        self,
-        args: tuple[str] | HelloArgs,
-        params: algokit_utils.CommonAppCallParams | None = None,
-        send_params: algokit_utils.SendParams | None = None
-    ) -> algokit_utils.SendAppTransactionResult[str]:
-        method_args = _parse_abi_args(args)
-        params = params or algokit_utils.CommonAppCallParams()
-        response = self.app_client.send.call(algokit_utils.AppClientMethodCallParams(**{
-            **dataclasses.asdict(params),
-            "method": "hello(string)string",
-            "args": method_args,
-        }), send_params=send_params)
-        parsed_response = response
-        return typing.cast(algokit_utils.SendAppTransactionResult[str], parsed_response)
-
     def add_student(
         self,
-        args: tuple[str, str, str] | AddStudentArgs,
+        args: tuple[str, str, str, str] | AddStudentArgs,
         params: algokit_utils.CommonAppCallParams | None = None,
         send_params: algokit_utils.SendParams | None = None
     ) -> algokit_utils.SendAppTransactionResult[None]:
@@ -232,27 +147,11 @@ class StudentSend:
         params = params or algokit_utils.CommonAppCallParams()
         response = self.app_client.send.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "add_student(string,string,string)void",
+            "method": "add_student(string,string,string,string)void",
             "args": method_args,
         }), send_params=send_params)
         parsed_response = response
         return typing.cast(algokit_utils.SendAppTransactionResult[None], parsed_response)
-
-    def get_student(
-        self,
-        args: tuple[str] | GetStudentArgs,
-        params: algokit_utils.CommonAppCallParams | None = None,
-        send_params: algokit_utils.SendParams | None = None
-    ) -> algokit_utils.SendAppTransactionResult[str]:
-        method_args = _parse_abi_args(args)
-        params = params or algokit_utils.CommonAppCallParams()
-        response = self.app_client.send.call(algokit_utils.AppClientMethodCallParams(**{
-            **dataclasses.asdict(params),
-            "method": "get_student(string)string",
-            "args": method_args,
-        }), send_params=send_params)
-        parsed_response = response
-        return typing.cast(algokit_utils.SendAppTransactionResult[str], parsed_response)
 
     def clear_state(
         self,
@@ -270,6 +169,80 @@ class StudentState:
 
     def __init__(self, app_client: algokit_utils.AppClient):
         self.app_client = app_client
+
+    @property
+    def box(
+        self
+    ) -> "_BoxState":
+            """Methods to access box for the current app"""
+            return _BoxState(self.app_client)
+
+class _BoxState:
+    def __init__(self, app_client: algokit_utils.AppClient):
+        self.app_client = app_client
+        
+        # Pre-generated mapping of value types to their struct classes
+        self._struct_classes: dict[str, typing.Type[typing.Any]] = {}
+
+    def get_all(self) -> dict[str, typing.Any]:
+        """Get all current keyed values from box state"""
+        result = self.app_client.state.box.get_all()
+        if not result:
+            return {}
+
+        converted = {}
+        for key, value in result.items():
+            key_info = self.app_client.app_spec.state.keys.box.get(key)
+            struct_class = self._struct_classes.get(key_info.value_type) if key_info else None
+            converted[key] = (
+                _init_dataclass(struct_class, value) if struct_class and isinstance(value, dict)
+                else value
+            )
+        return converted
+
+    @property
+    def students(self) -> "_MapState[bytes, str]":
+        """Get values from the students map in box state"""
+        return _MapState(
+            self.app_client.state.box,
+            "students",
+            None
+        )
+
+_KeyType = typing.TypeVar("_KeyType")
+_ValueType = typing.TypeVar("_ValueType")
+
+class _AppClientStateMethodsProtocol(typing.Protocol):
+    def get_map(self, map_name: str) -> dict[typing.Any, typing.Any]:
+        ...
+    def get_map_value(self, map_name: str, key: typing.Any) -> typing.Any | None:
+        ...
+
+class _MapState(typing.Generic[_KeyType, _ValueType]):
+    """Generic class for accessing state maps with strongly typed keys and values"""
+
+    def __init__(self, state_accessor: _AppClientStateMethodsProtocol, map_name: str,
+                struct_class: typing.Type[_ValueType] | None = None):
+        self._state_accessor = state_accessor
+        self._map_name = map_name
+        self._struct_class = struct_class
+
+    def get_map(self) -> dict[_KeyType, _ValueType]:
+        """Get all current values in the map"""
+        result = self._state_accessor.get_map(self._map_name)
+        if self._struct_class and result:
+            return {k: _init_dataclass(self._struct_class, v) if isinstance(v, dict) else v
+                    for k, v in result.items()}  # type: ignore
+        return typing.cast(dict[_KeyType, _ValueType], result or {})
+
+    def get_value(self, key: _KeyType) -> _ValueType | None:
+        """Get a value from the map by key"""
+        key_value = dataclasses.asdict(key) if dataclasses.is_dataclass(key) else key  # type: ignore
+        value = self._state_accessor.get_map_value(self._map_name, key_value)
+        if value is not None and self._struct_class and isinstance(value, dict):
+            return _init_dataclass(self._struct_class, value)  # type: ignore
+        return typing.cast(_ValueType | None, value)
+
 
 class StudentClient:
     """Client for interacting with Student smart contract"""
@@ -417,21 +390,9 @@ class StudentClient:
     @typing.overload
     def decode_return_value(
         self,
-        method: typing.Literal["hello(string)string"],
-        return_value: algokit_utils.ABIReturn | None
-    ) -> str | None: ...
-    @typing.overload
-    def decode_return_value(
-        self,
-        method: typing.Literal["add_student(string,string,string)void"],
+        method: typing.Literal["add_student(string,string,string,string)void"],
         return_value: algokit_utils.ABIReturn | None
     ) -> None: ...
-    @typing.overload
-    def decode_return_value(
-        self,
-        method: typing.Literal["get_student(string)string"],
-        return_value: algokit_utils.ABIReturn | None
-    ) -> str | None: ...
     @typing.overload
     def decode_return_value(
         self,
@@ -443,7 +404,7 @@ class StudentClient:
         self,
         method: str,
         return_value: algokit_utils.ABIReturn | None
-    ) -> algokit_utils.ABIValue | algokit_utils.ABIStruct | None | str:
+    ) -> algokit_utils.ABIValue | algokit_utils.ABIStruct | None:
         """Decode ABI return value for the given method."""
         if return_value is None:
             return None
@@ -614,60 +575,20 @@ class StudentFactoryCreateParams:
             algokit_utils.AppFactoryCreateParams(**dataclasses.asdict(params)),
             compilation_params=compilation_params)
 
-    def hello(
-        self,
-        args: tuple[str] | HelloArgs,
-        *,
-        params: algokit_utils.CommonAppCallCreateParams | None = None,
-        compilation_params: algokit_utils.AppClientCompilationParams | None = None
-    ) -> algokit_utils.AppCreateMethodCallParams:
-        """Creates a new instance using the hello(string)string ABI method"""
-        params = params or algokit_utils.CommonAppCallCreateParams()
-        return self.app_factory.params.create(
-            algokit_utils.AppFactoryCreateMethodCallParams(
-                **{
-                **dataclasses.asdict(params),
-                "method": "hello(string)string",
-                "args": _parse_abi_args(args),
-                }
-            ),
-            compilation_params=compilation_params
-        )
-
     def add_student(
         self,
-        args: tuple[str, str, str] | AddStudentArgs,
+        args: tuple[str, str, str, str] | AddStudentArgs,
         *,
         params: algokit_utils.CommonAppCallCreateParams | None = None,
         compilation_params: algokit_utils.AppClientCompilationParams | None = None
     ) -> algokit_utils.AppCreateMethodCallParams:
-        """Creates a new instance using the add_student(string,string,string)void ABI method"""
+        """Creates a new instance using the add_student(string,string,string,string)void ABI method"""
         params = params or algokit_utils.CommonAppCallCreateParams()
         return self.app_factory.params.create(
             algokit_utils.AppFactoryCreateMethodCallParams(
                 **{
                 **dataclasses.asdict(params),
-                "method": "add_student(string,string,string)void",
-                "args": _parse_abi_args(args),
-                }
-            ),
-            compilation_params=compilation_params
-        )
-
-    def get_student(
-        self,
-        args: tuple[str] | GetStudentArgs,
-        *,
-        params: algokit_utils.CommonAppCallCreateParams | None = None,
-        compilation_params: algokit_utils.AppClientCompilationParams | None = None
-    ) -> algokit_utils.AppCreateMethodCallParams:
-        """Creates a new instance using the get_student(string)string ABI method"""
-        params = params or algokit_utils.CommonAppCallCreateParams()
-        return self.app_factory.params.create(
-            algokit_utils.AppFactoryCreateMethodCallParams(
-                **{
-                **dataclasses.asdict(params),
-                "method": "get_student(string)string",
+                "method": "add_student(string,string,string,string)void",
                 "args": _parse_abi_args(args),
                 }
             ),
@@ -775,27 +696,9 @@ class StudentComposer:
         self._composer = client.algorand.new_group()
         self._result_mappers: list[typing.Callable[[algokit_utils.ABIReturn | None], object] | None] = []
 
-    def hello(
-        self,
-        args: tuple[str] | HelloArgs,
-        params: algokit_utils.CommonAppCallParams | None = None
-    ) -> "StudentComposer":
-        self._composer.add_app_call_method_call(
-            self.client.params.hello(
-                args=args,
-                params=params,
-            )
-        )
-        self._result_mappers.append(
-            lambda v: self.client.decode_return_value(
-                "hello(string)string", v
-            )
-        )
-        return self
-
     def add_student(
         self,
-        args: tuple[str, str, str] | AddStudentArgs,
+        args: tuple[str, str, str, str] | AddStudentArgs,
         params: algokit_utils.CommonAppCallParams | None = None
     ) -> "StudentComposer":
         self._composer.add_app_call_method_call(
@@ -806,25 +709,7 @@ class StudentComposer:
         )
         self._result_mappers.append(
             lambda v: self.client.decode_return_value(
-                "add_student(string,string,string)void", v
-            )
-        )
-        return self
-
-    def get_student(
-        self,
-        args: tuple[str] | GetStudentArgs,
-        params: algokit_utils.CommonAppCallParams | None = None
-    ) -> "StudentComposer":
-        self._composer.add_app_call_method_call(
-            self.client.params.get_student(
-                args=args,
-                params=params,
-            )
-        )
-        self._result_mappers.append(
-            lambda v: self.client.decode_return_value(
-                "get_student(string)string", v
+                "add_student(string,string,string,string)void", v
             )
         )
         return self

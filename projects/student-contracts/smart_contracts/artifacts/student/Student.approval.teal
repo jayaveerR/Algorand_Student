@@ -3,22 +3,28 @@
 
 // algopy.arc4.ARC4Contract.approval_program() -> uint64:
 main:
-    intcblock 0 2 1
+    intcblock 0 2
+    bytecblock "|"
     // smart_contracts/student/contract.py:5
     // class Student(ARC4Contract):
     txn NumAppArgs
-    bz main___algopy_default_create@10
-    txn OnCompletion
-    !
-    assert
-    txn ApplicationID
-    assert
-    pushbytess 0x02bece11 0x0820cc76 0xf148e7ed // method "hello(string)string", method "add_student(string,string,string)void", method "get_student(string)string"
+    bz main___algopy_default_create@7
+    pushbytes 0xe244e994 // method "add_student(string,string,string,string)void"
     txna ApplicationArgs 0
-    match hello add_student get_student
+    match main_add_student_route@5
     err
 
-main___algopy_default_create@10:
+main_add_student_route@5:
+    // smart_contracts/student/contract.py:9
+    // @abimethod()
+    txn OnCompletion
+    !
+    txn ApplicationID
+    &&
+    assert
+    b add_student
+
+main___algopy_default_create@7:
     txn OnCompletion
     !
     txn ApplicationID
@@ -27,45 +33,9 @@ main___algopy_default_create@10:
     return
 
 
-// smart_contracts.student.contract.Student.hello[routing]() -> void:
-hello:
-    // smart_contracts/student/contract.py:6
-    // @abimethod()
-    txna ApplicationArgs 1
-    dup
-    intc_0 // 0
-    extract_uint16 // on error: invalid array length header
-    intc_1 // 2
-    +
-    dig 1
-    len
-    ==
-    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
-    extract 2 0
-    // smart_contracts/student/contract.py:8
-    // return "Hello, " + name
-    pushbytes "Hello, "
-    swap
-    concat
-    // smart_contracts/student/contract.py:6
-    // @abimethod()
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    pushbytes 0x151f7c75
-    swap
-    concat
-    log
-    intc_2 // 1
-    return
-
-
 // smart_contracts.student.contract.Student.add_student[routing]() -> void:
 add_student:
-    // smart_contracts/student/contract.py:10
+    // smart_contracts/student/contract.py:9
     // @abimethod()
     txna ApplicationArgs 1
     dup
@@ -100,51 +70,43 @@ add_student:
     ==
     assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
     extract 2 0
-    // smart_contracts/student/contract.py:15
-    // box_key = Txn.sender.bytes
-    txn Sender
-    // smart_contracts/student/contract.py:16
-    // student_data = name + "|" + roll_no + "|" + city
-    uncover 3
-    pushbytes "|"
-    concat
-    uncover 3
-    concat
-    pushbytes "|"
-    concat
-    uncover 2
-    concat
-    // smart_contracts/student/contract.py:18-19
-    // # Delete if exists
-    // deleted = op.Box.delete(box_key)
-    dig 1
-    box_del
-    pop
-    // smart_contracts/student/contract.py:21-22
-    // # Store the data
-    // op.Box.put(box_key, student_data.bytes)
-    box_put
-    // smart_contracts/student/contract.py:10
-    // @abimethod()
-    intc_2 // 1
-    return
-
-
-// smart_contracts.student.contract.Student.get_student[routing]() -> void:
-get_student:
-    // smart_contracts/student/contract.py:24
-    // @abimethod()
-    txna ApplicationArgs 1
+    txna ApplicationArgs 4
     dup
     intc_0 // 0
     extract_uint16 // on error: invalid array length header
     intc_1 // 2
     +
-    swap
+    dig 1
     len
     ==
     assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
-    pushbytes 0x151f7c750019446174612072657472696576616c206c6f6769632068657265
-    log
-    intc_2 // 1
+    extract 2 0
+    // smart_contracts/student/contract.py:14
+    // student_data = name + "|" + roll_no + "|" + city + "|" + phone_number
+    uncover 3
+    bytec_0 // "|"
+    concat
+    uncover 3
+    concat
+    bytec_0 // "|"
+    concat
+    uncover 2
+    concat
+    bytec_0 // "|"
+    concat
+    swap
+    concat
+    // smart_contracts/student/contract.py:15
+    // self.students[Txn.sender.bytes] = student_data
+    pushbytes "students"
+    txn Sender
+    concat
+    dup
+    box_del
+    pop
+    swap
+    box_put
+    // smart_contracts/student/contract.py:9
+    // @abimethod()
+    pushint 1
     return
