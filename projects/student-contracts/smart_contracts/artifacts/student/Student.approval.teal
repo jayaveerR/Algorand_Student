@@ -1,0 +1,150 @@
+#pragma version 11
+#pragma typetrack false
+
+// algopy.arc4.ARC4Contract.approval_program() -> uint64:
+main:
+    intcblock 0 2 1
+    // smart_contracts/student/contract.py:5
+    // class Student(ARC4Contract):
+    txn NumAppArgs
+    bz main___algopy_default_create@10
+    txn OnCompletion
+    !
+    assert
+    txn ApplicationID
+    assert
+    pushbytess 0x02bece11 0x0820cc76 0xf148e7ed // method "hello(string)string", method "add_student(string,string,string)void", method "get_student(string)string"
+    txna ApplicationArgs 0
+    match hello add_student get_student
+    err
+
+main___algopy_default_create@10:
+    txn OnCompletion
+    !
+    txn ApplicationID
+    !
+    &&
+    return
+
+
+// smart_contracts.student.contract.Student.hello[routing]() -> void:
+hello:
+    // smart_contracts/student/contract.py:6
+    // @abimethod()
+    txna ApplicationArgs 1
+    dup
+    intc_0 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_1 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    // smart_contracts/student/contract.py:8
+    // return "Hello, " + name
+    pushbytes "Hello, "
+    swap
+    concat
+    // smart_contracts/student/contract.py:6
+    // @abimethod()
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    pushbytes 0x151f7c75
+    swap
+    concat
+    log
+    intc_2 // 1
+    return
+
+
+// smart_contracts.student.contract.Student.add_student[routing]() -> void:
+add_student:
+    // smart_contracts/student/contract.py:10
+    // @abimethod()
+    txna ApplicationArgs 1
+    dup
+    intc_0 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_1 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    txna ApplicationArgs 2
+    dup
+    intc_0 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_1 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    txna ApplicationArgs 3
+    dup
+    intc_0 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_1 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    // smart_contracts/student/contract.py:15
+    // box_key = Txn.sender.bytes
+    txn Sender
+    // smart_contracts/student/contract.py:16
+    // student_data = name + "|" + roll_no + "|" + city
+    uncover 3
+    pushbytes "|"
+    concat
+    uncover 3
+    concat
+    pushbytes "|"
+    concat
+    uncover 2
+    concat
+    // smart_contracts/student/contract.py:18-19
+    // # Delete if exists
+    // deleted = op.Box.delete(box_key)
+    dig 1
+    box_del
+    pop
+    // smart_contracts/student/contract.py:21-22
+    // # Store the data
+    // op.Box.put(box_key, student_data.bytes)
+    box_put
+    // smart_contracts/student/contract.py:10
+    // @abimethod()
+    intc_2 // 1
+    return
+
+
+// smart_contracts.student.contract.Student.get_student[routing]() -> void:
+get_student:
+    // smart_contracts/student/contract.py:24
+    // @abimethod()
+    txna ApplicationArgs 1
+    dup
+    intc_0 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_1 // 2
+    +
+    swap
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    pushbytes 0x151f7c750019446174612072657472696576616c206c6f6769632068657265
+    log
+    intc_2 // 1
+    return

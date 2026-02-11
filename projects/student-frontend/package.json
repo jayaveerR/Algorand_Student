@@ -17,7 +17,10 @@
     "@types/react": "^18.2.11",
     "@types/react-dom": "^18.2.4",
     "@vitejs/plugin-react": "^4.2.1",
-    "autoprefixer": "^10.4.14",
+    "autoprefixer": "^10.4.24",
+    "daisyui": "^4.12.24",
+    "postcss": "^8.5.6",
+    "tailwindcss": "~3.4.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6",
     "vite": "^5.0.0",
@@ -33,6 +36,7 @@
     "notistack": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.30.3",
     "tslib": "^2.6.2"
   },
   "scripts": {

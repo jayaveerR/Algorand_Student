@@ -1,11 +1,13 @@
-import { SupportedWallet, WalletId, WalletManager, WalletProvider } from '@txnlab/use-wallet-react'
-import { SnackbarProvider } from 'notistack'
-import Home from './Home'
-import { getAlgodConfigFromViteEnvironment, getKmdConfigFromViteEnvironment } from './utils/network/getAlgoClientConfigs'
+import { SupportedWallet, WalletId, WalletManager, WalletProvider } from "@txnlab/use-wallet-react";
+import { SnackbarProvider } from "notistack";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./Home";
+import Login from "./Login";
+import { getAlgodConfigFromViteEnvironment, getKmdConfigFromViteEnvironment } from "./utils/network/getAlgoClientConfigs";
 
-let supportedWallets: SupportedWallet[]
-if (import.meta.env.VITE_ALGOD_NETWORK === 'localnet') {
-  const kmdConfig = getKmdConfigFromViteEnvironment()
+let supportedWallets: SupportedWallet[];
+if (import.meta.env.VITE_ALGOD_NETWORK === "localnet") {
+  const kmdConfig = getKmdConfigFromViteEnvironment();
   supportedWallets = [
     {
       id: WalletId.KMD,
@@ -15,7 +17,9 @@ if (import.meta.env.VITE_ALGOD_NETWORK === 'localnet') {
         port: String(kmdConfig.port),
       },
     },
-  ]
+    { id: WalletId.PERA },
+    { id: WalletId.DEFLY },
+  ];
 } else {
   supportedWallets = [
     { id: WalletId.DEFLY },
@@ -23,11 +27,11 @@ if (import.meta.env.VITE_ALGOD_NETWORK === 'localnet') {
     { id: WalletId.EXODUS },
     // If you are interested in WalletConnect v2 provider
     // refer to https://github.com/TxnLab/use-wallet for detailed integration instructions
-  ]
+  ];
 }
 
 export default function App() {
-  const algodConfig = getAlgodConfigFromViteEnvironment()
+  const algodConfig = getAlgodConfigFromViteEnvironment();
 
   const walletManager = new WalletManager({
     wallets: supportedWallets,
@@ -44,13 +48,18 @@ export default function App() {
     options: {
       resetNetwork: true,
     },
-  })
+  });
 
   return (
     <SnackbarProvider maxSnack={3}>
       <WalletProvider manager={walletManager}>
-        <Home />
+        <Router>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/home" element={<Home />} />
+          </Routes>
+        </Router>
       </WalletProvider>
     </SnackbarProvider>
-  )
+  );
 }

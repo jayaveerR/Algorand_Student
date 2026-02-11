@@ -1,32 +1,32 @@
-import { useWallet } from '@txnlab/use-wallet-react'
-import { useSnackbar } from 'notistack'
-import { useState } from 'react'
-import { StudentFactory } from '../contracts/Student'
-import { OnSchemaBreak, OnUpdate } from '@algorandfoundation/algokit-utils/types/app'
-import { getAlgodConfigFromViteEnvironment, getIndexerConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
-import { AlgorandClient } from '@algorandfoundation/algokit-utils'
+import { useWallet } from "@txnlab/use-wallet-react";
+import { useSnackbar } from "notistack";
+import { useState } from "react";
+import { StudentFactory } from "../contracts/Student";
+import { OnSchemaBreak, OnUpdate } from "@algorandfoundation/algokit-utils/types/app";
+import { getAlgodConfigFromViteEnvironment, getIndexerConfigFromViteEnvironment } from "../utils/network/getAlgoClientConfigs";
+import { AlgorandClient } from "@algorandfoundation/algokit-utils";
 
 interface AppCallsInterface {
-  openModal: boolean
-  setModalState: (value: boolean) => void
+  openModal: boolean;
+  setModalState: (value: boolean) => void;
 }
 
 const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
-  const [loading, setLoading] = useState<boolean>(false)
-  const [contractInput, setContractInput] = useState<string>('')
-  const { enqueueSnackbar } = useSnackbar()
-  const { transactionSigner, activeAddress } = useWallet()
+  const [loading, setLoading] = useState<boolean>(false);
+  const [contractInput, setContractInput] = useState<string>("");
+  const { enqueueSnackbar } = useSnackbar();
+  const { transactionSigner, activeAddress } = useWallet();
 
-  const algodConfig = getAlgodConfigFromViteEnvironment()
-  const indexerConfig = getIndexerConfigFromViteEnvironment()
+  const algodConfig = getAlgodConfigFromViteEnvironment();
+  const indexerConfig = getIndexerConfigFromViteEnvironment();
   const algorand = AlgorandClient.fromConfig({
     algodConfig,
     indexerConfig,
-  })
-  algorand.setDefaultSigner(transactionSigner)
+  });
+  algorand.setDefaultSigner(transactionSigner);
 
   const sendAppCall = async () => {
-    setLoading(true)
+    setLoading(true);
 
     // Please note, in typical production scenarios,
     // you wouldn't want to use deploy directly from your frontend.
@@ -36,40 +36,47 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
     const factory = new StudentFactory({
       defaultSender: activeAddress ?? undefined,
       algorand,
-    })
-    const deployResult = await factory
-      .deploy({
-        onSchemaBreak: OnSchemaBreak.AppendApp,
-        onUpdate: OnUpdate.AppendApp,
-      })
-      .catch((e: Error) => {
-        enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: 'error' })
-        setLoading(false)
-        return undefined
-      })
+    });
 
-    if (!deployResult) {
-      return
+    let appClient;
+    const appId = import.meta.env.VITE_STUDENT_APP_ID;
+
+    if (appId && appId !== "0" && import.meta.env.VITE_ALGOD_NETWORK === "testnet") {
+      appClient = factory.getAppClientById({ appId: BigInt(appId) });
+    } else {
+      const deployResult = await factory
+        .deploy({
+          onSchemaBreak: OnSchemaBreak.AppendApp,
+          onUpdate: OnUpdate.AppendApp,
+        })
+        .catch((e: Error) => {
+          enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: "error" });
+          setLoading(false);
+          return undefined;
+        });
+
+      if (!deployResult) {
+        return;
+      }
+      appClient = deployResult.appClient;
     }
-
-    const { appClient } = deployResult
 
     const response = await appClient.send.hello({ args: { name: contractInput } }).catch((e: Error) => {
-      enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
-      setLoading(false)
-      return undefined
-    })
+      enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: "error" });
+      setLoading(false);
+      return undefined;
+    });
 
     if (!response) {
-      return
+      return;
     }
 
-    enqueueSnackbar(`Response from the contract: ${response.return}`, { variant: 'success' })
-    setLoading(false)
-  }
+    enqueueSnackbar(`Response from the contract: ${response.return}`, { variant: "success" });
+    setLoading(false);
+  };
 
   return (
-    <dialog id="appcalls_modal" className={`modal ${openModal ? 'modal-open' : ''} bg-slate-200`}>
+    <dialog id="appcalls_modal" className={`modal ${openModal ? "modal-open" : ""} bg-slate-200`}>
       <form method="dialog" className="modal-box">
         <h3 className="font-bold text-lg">Say hello to your Algorand smart contract</h3>
         <br />
@@ -79,7 +86,7 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
           className="input input-bordered w-full"
           value={contractInput}
           onChange={(e) => {
-            setContractInput(e.target.value)
+            setContractInput(e.target.value);
           }}
         />
         <div className="modal-action ">
@@ -87,12 +94,12 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
             Close
           </button>
           <button className={`btn`} onClick={sendAppCall}>
-            {loading ? <span className="loading loading-spinner" /> : 'Send application call'}
+            {loading ? <span className="loading loading-spinner" /> : "Send application call"}
           </button>
         </div>
       </form>
     </dialog>
-  )
-}
+  );
+};
 
-export default AppCalls
+export default AppCalls;

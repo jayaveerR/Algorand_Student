@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 # define deployment behaviour based on supplied app spec
 def deploy() -> None:
     from smart_contracts.artifacts.student.student_client import (
+        AddStudentArgs,
         HelloArgs,
         StudentFactory,
     )
@@ -35,6 +36,18 @@ def deploy() -> None:
                 receiver=app_client.app_address,
             )
         )
+
+    # Example: Register a student during deployment
+    app_client.send.add_student(
+        args=AddStudentArgs(
+            name="Deployer Student",
+            roll_no="24H71F0080",
+            city="Blockchain City"
+        ),
+        # Boxes need to be referenced. We use the deployer's address as the key.
+        box_references=[algokit_utils.BoxReference(app_id=0, name=deployer_.address)]
+    )
+    logger.info(f"Registered example student with Roll ID: 24H71F0080")
 
     name = "world"
     response = app_client.send.hello(args=HelloArgs(name=name))
